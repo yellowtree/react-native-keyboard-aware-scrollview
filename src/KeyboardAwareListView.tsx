@@ -15,7 +15,8 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
     keyboardAwareView,
     onKeyboardAwareViewLayout,
     onKeyboardAwareViewScroll,
-    updateKeyboardAwareViewContentSize
+    updateKeyboardAwareViewContentSize,
+    wrapRender
   } = useKeyboardAwareBase(props)
 
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
@@ -29,13 +30,14 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
     }
   }, [props.onScroll, onKeyboardAwareViewLayout])
 
-  return (
+  return wrapRender(
     <ListView
       {...props}
       contentInset={{ bottom: keyboardHeight }}
       ref={keyboardAwareView}
       onLayout={handleLayout}
       onScroll={onScroll}
+      automaticallyAdjustContentInsets={false}
       onContentSizeChange={updateKeyboardAwareViewContentSize}
       scrollEventThrottle={200}
     />

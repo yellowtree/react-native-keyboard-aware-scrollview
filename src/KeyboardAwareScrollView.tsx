@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import {
-  ScrollView, NativeSyntheticEvent, NativeScrollEvent, LayoutChangeEvent, ScrollViewProps
+  ScrollView, NativeSyntheticEvent, NativeScrollEvent, LayoutChangeEvent, ScrollViewProps, Dimensions, View
 } from 'react-native';
 
 import useKeyboardAwareBase, { KeyboardAwareBaseProps } from './useKeyboardAwareBase';
@@ -10,13 +10,17 @@ import useKeyboardAwareBase, { KeyboardAwareBaseProps } from './useKeyboardAware
 const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & KeyboardAwareBaseProps & {
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
 }> = props => {
+
   const {
     keyboardHeight,
     keyboardAwareView,
     onKeyboardAwareViewLayout,
     onKeyboardAwareViewScroll,
-    updateKeyboardAwareViewContentSize
-  } = useKeyboardAwareBase(props)
+    updateKeyboardAwareViewContentSize,
+    wrapRender
+  } = useKeyboardAwareBase({
+    ...props
+  })
 
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
     onKeyboardAwareViewLayout(e.nativeEvent.layout)
@@ -29,13 +33,14 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
     }
   }, [props.onScroll, onKeyboardAwareViewLayout])
 
-  return (
+  return wrapRender(
     <ScrollView
       {...props}
-      contentInset={{ bottom: keyboardHeight }}
       ref={keyboardAwareView}
+      scrollToOverflowEnabled
       onLayout={handleLayout}
       onScroll={onScroll}
+      automaticallyAdjustContentInsets={false}
       onContentSizeChange={updateKeyboardAwareViewContentSize}
       scrollEventThrottle={200}
     />
