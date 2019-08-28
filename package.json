@@ -14,7 +14,7 @@
     "url": "https://github.com/wix/react-native-keyboard-aware-scrollview/issues"
   },
   "homepage": "https://github.com/wix/react-native-keyboard-aware-scrollview",
-  "main": "index.js",
+  "main": "index.ts",
   "author": "Artal Druk <artald@wix.com>",
   "license": "MIT",
   "peerDependencies": {

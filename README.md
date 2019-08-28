@@ -1,6 +1,9 @@
 # react-native-keyboard-aware-scrollview
 A helper component meant to be used as a drop-in replacement for RN ScrollView which handles the ScrollView insets properly when the keyboard is shown or hides so all the content is scrollable and available to the user.
 
+## This is a fork, but not a drop-in-replacement
+The fork converts the library to Typescript and removes all classes in favour of hooks. As a side-effect you can't use ref for this component anymore. This may be temporarily.
+
 ## Installation
 
 Install using `npm`:
