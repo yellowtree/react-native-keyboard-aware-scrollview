@@ -37,6 +37,7 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
       contentInset={{ bottom: keyboardHeight }}
       ref={keyboardAwareView}
       scrollToOverflowEnabled
+      scrollEnabled={keyboardHeight === 0}
       onLayout={handleLayout}
       onScroll={onScroll}
       automaticallyAdjustContentInsets={false}

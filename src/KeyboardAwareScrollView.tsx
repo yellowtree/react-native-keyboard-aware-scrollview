@@ -39,6 +39,7 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
       {...props}
       ref={keyboardAwareView}
       scrollToOverflowEnabled
+      scrollEnabled={keyboardHeight === 0}
       onLayout={handleLayout}
       onScroll={onScroll}
       automaticallyAdjustContentInsets={false}
