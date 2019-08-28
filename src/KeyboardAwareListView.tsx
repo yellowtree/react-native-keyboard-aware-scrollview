@@ -31,10 +31,12 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
   }, [props.onScroll, onKeyboardAwareViewLayout])
 
   return wrapRender(
+    // @ts-ignore scrollToOverflowEnabled is missing from type
     <ListView
       {...props}
       contentInset={{ bottom: keyboardHeight }}
       ref={keyboardAwareView}
+      scrollToOverflowEnabled
       onLayout={handleLayout}
       onScroll={onScroll}
       automaticallyAdjustContentInsets={false}

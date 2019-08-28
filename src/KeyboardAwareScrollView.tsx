@@ -34,6 +34,7 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
   }, [props.onScroll, onKeyboardAwareViewLayout])
 
   return wrapRender(
+    // @ts-ignore scrollToOverflowEnabled is missing from type
     <ScrollView
       {...props}
       ref={keyboardAwareView}

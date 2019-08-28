@@ -1,7 +1,7 @@
-import React, { ReactNode, useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback, useEffect, ReactElement } from 'react'
 import { View } from 'react-native';
 
-const usePageY: (dependencies: any[], style) => [number, (ReactNode) => ReactNode] = (dependencies, style) => {
+const usePageY: (dependencies: any[], style) => [number, (children: ReactElement) => ReactElement] = (dependencies, style) => {
   const [pageY, setPageY] = useState(0)
 
   const wrapper = useRef<View>()

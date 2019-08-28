@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, ReactNode } from 'react'
+import { useState, useCallback, useRef, useEffect, ReactElement } from 'react'
 import ReactNative, {
   DeviceEventEmitter,
   Keyboard,
@@ -36,7 +36,7 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
   dimensions: LayoutRectangle,
   contentOffset: { x: number, y: number },
   contentSize: LayoutRectangle,
-  wrapRender: (ReactNode) => ReactNode
+  wrapRender: (children: ReactElement) => ReactElement
 } = ({
   style = false,
   getTextInputRefs = getEmptyArr,
