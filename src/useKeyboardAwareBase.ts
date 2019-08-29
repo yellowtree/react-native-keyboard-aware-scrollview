@@ -19,11 +19,7 @@ export interface KeyboardAwareBaseProps {
   startScrolledToBottom?: boolean
 }
 
-type KeyboardAwareViewRef = React.MutableRefObject<ScrollView & {
-  layout: LayoutRectangle,
-  contentOffset: { x: number, y: number },
-  contentSize: LayoutRectangle
-}>
+type KeyboardAwareViewRef = React.MutableRefObject<ScrollView>
 
 const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
   keyboardHeight: number,
@@ -43,9 +39,9 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
 }) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0)
     const keyboardAwareView: KeyboardAwareViewRef = useRef()
-    const [dimensions, setDimensions] = useState<LayoutRectangle>({ x: 0, y: 0, width: 0, height: 0 })
-    const [contentOffset, setContentOffset] = useState({ x: 0, y: 0 })
-    const [contentSize, setContentSize] = useState<LayoutRectangle>({ x: 0, y: 0, width: 0, height: 0 })
+    const dimensions = useRef<LayoutRectangle>()
+    const contentOffset = useRef<{ x: number, y: number }>()
+    const contentSize = useRef<LayoutRectangle>()
 
     const [getPageY, wrapPageY] = usePageY(style)
 
@@ -88,13 +84,13 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
     const scrollToBottom = useCallback((scrollAnimated = true) => {
       if (keyboardAwareView.current) {
 
-        if (!keyboardAwareView.current.contentSize) {
+        if (!contentSize.current) {
           setTimeout(() => scrollToBottom(scrollAnimated), 50);
           return;
         }
 
-        const bottomYOffset = keyboardAwareView.current.contentSize.height - keyboardAwareView.current.layout.height + keyboardAwareView.current.props.contentInset.bottom;
-        keyboardAwareView.current.scrollTo({ x: 0, y: bottomYOffset, animated: scrollAnimated });
+        const bottomYOffset = contentSize.current.height - dimensions.current.height + keyboardAwareView.current.props.contentInset.bottom;
+        keyboardAwareView.current && keyboardAwareView.current.scrollTo({ x: 0, y: bottomYOffset, animated: scrollAnimated });
       }
     }, [])
 
@@ -117,9 +113,9 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
       const _keyboardHeight = keyboardHeight
       setKeyboardHeight(0)
 
-      const hasYOffset = keyboardAwareView.current && keyboardAwareView.current.contentOffset && keyboardAwareView.current.contentOffset.y !== undefined;
-      const yOffset = hasYOffset ? Math.max(keyboardAwareView.current.contentOffset.y - _keyboardHeight, 0) : 0;
-      keyboardAwareView.current.scrollTo({ x: 0, y: yOffset, animated: true });
+      const hasYOffset = contentOffset.current && contentOffset.current.y;
+      const yOffset = hasYOffset ? Math.max(contentOffset.current.y - _keyboardHeight, 0) : 0;
+      keyboardAwareView.current && keyboardAwareView.current.scrollTo({ x: 0, y: yOffset, animated: true });
     }, [keyboardHeight])
 
     useEffect(() => {
@@ -141,31 +137,21 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
 
     //const scrollBottomOnNextSizeChangeRef = useRef(false)
     const updateKeyboardAwareViewContentSize = useCallback(() => {
-      if (ScrollViewManager && ScrollViewManager.getContentSize) {
+      if (keyboardAwareView.current && ScrollViewManager && ScrollViewManager.getContentSize) {
         ScrollViewManager.getContentSize(ReactNative.findNodeHandle(keyboardAwareView.current), (res) => {
-          if (keyboardAwareView.current) {
-            keyboardAwareView.current.contentSize = res;
-            setContentSize(res)
-            // if (scrollBottomOnNextSizeChangeRef.current) {
-            //   scrollToBottom();
-            //   scrollBottomOnNextSizeChangeRef.current = false;
-            // }
-          }
+          contentSize.current = res
         })
       }
-    }, [])
+    }, [keyboardAwareView.current])
 
     const onKeyboardAwareViewLayout = useCallback((layout) => {
-      keyboardAwareView.current.layout = layout;
-      setDimensions(layout)
-      keyboardAwareView.current.contentOffset = { x: 0, y: 0 };
-      setContentOffset({ x: 0, y: 0 })
+      dimensions.current = layout;
+      contentOffset.current = { x: 0, y: 0 };
       updateKeyboardAwareViewContentSize();
     }, [])
 
     const onKeyboardAwareViewScroll = useCallback((contentOffset) => {
-      keyboardAwareView.current.contentOffset = contentOffset;
-      setContentOffset(contentOffset)
+      contentOffset.current = contentOffset;
       updateKeyboardAwareViewContentSize();
     }, [])
 
@@ -187,9 +173,9 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
       onKeyboardAwareViewLayout,
       onKeyboardAwareViewScroll,
       updateKeyboardAwareViewContentSize,
-      dimensions,
-      contentOffset,
-      contentSize,
+      dimensions: dimensions.current,
+      contentOffset: contentOffset.current,
+      contentSize: contentSize.current,
       wrapRender
     }
   }

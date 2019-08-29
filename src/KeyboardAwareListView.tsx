@@ -5,10 +5,11 @@ import {
 } from 'react-native';
 
 import useKeyboardAwareBase, { KeyboardAwareBaseProps } from './useKeyboardAwareBase';
+import useMergedRef from './useMergedRef';
 
-const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwareBaseProps & {
+const KeyboardAwareListView = React.forwardRef<ListView, ListViewProps & KeyboardAwareBaseProps & {
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
-}> = (props) => {
+}>((props, ref) => {
   const {
     keyboardHeight,
     keyboardAwareView,
@@ -17,6 +18,7 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
     updateKeyboardAwareViewContentSize,
     wrapRender
   } = useKeyboardAwareBase(props)
+  const mergedRef = useMergedRef(ref, keyboardAwareView)
 
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
     onKeyboardAwareViewLayout(e.nativeEvent.layout)
@@ -34,7 +36,7 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
     <ListView
       {...props}
       contentInset={{ bottom: keyboardHeight }}
-      ref={keyboardAwareView}
+      ref={mergedRef}
       scrollToOverflowEnabled
       scrollEnabled={keyboardHeight === 0}
       onLayout={handleLayout}
@@ -44,6 +46,6 @@ const KeyboardAwareListView: React.FunctionComponent<ListViewProps & KeyboardAwa
       scrollEventThrottle={200}
     />
   )
-}
+})
 
 export default KeyboardAwareListView

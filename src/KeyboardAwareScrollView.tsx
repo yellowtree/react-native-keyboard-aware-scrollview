@@ -5,11 +5,11 @@ import {
 } from 'react-native';
 
 import useKeyboardAwareBase, { KeyboardAwareBaseProps } from './useKeyboardAwareBase';
+import useMergedRef from './useMergedRef';
 
-const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & KeyboardAwareBaseProps & {
+const KeyboardAwareScrollView = React.forwardRef<ScrollView, ScrollViewProps & KeyboardAwareBaseProps & {
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
-}> = props => {
-
+}>((props, ref) => {
   const {
     keyboardHeight,
     keyboardAwareView,
@@ -20,6 +20,7 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
   } = useKeyboardAwareBase({
     ...props
   })
+  const mergedRef = useMergedRef<ScrollView>(ref, keyboardAwareView)
 
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
     onKeyboardAwareViewLayout(e.nativeEvent.layout)
@@ -36,7 +37,7 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
     // @ts-ignore scrollToOverflowEnabled is missing from type
     <ScrollView
       {...props}
-      ref={keyboardAwareView}
+      ref={mergedRef}
       scrollToOverflowEnabled
       scrollEnabled={keyboardHeight === 0}
       onLayout={handleLayout}
@@ -46,6 +47,6 @@ const KeyboardAwareScrollView: React.FunctionComponent<ScrollViewProps & Keyboar
       scrollEventThrottle={200}
     />
   )
-}
+})
 
 export default KeyboardAwareScrollView
