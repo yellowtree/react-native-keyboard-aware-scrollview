@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react'
-import PropTypes from 'prop-types'
+import React, { useCallback } from 'react'
 
 import {
-  ScrollView, NativeSyntheticEvent, NativeScrollEvent, LayoutChangeEvent, ScrollViewProps, Dimensions, View
+  ScrollView, NativeSyntheticEvent, NativeScrollEvent, LayoutChangeEvent, ScrollViewProps
 } from 'react-native';
 
 import useKeyboardAwareBase, { KeyboardAwareBaseProps } from './useKeyboardAwareBase';
