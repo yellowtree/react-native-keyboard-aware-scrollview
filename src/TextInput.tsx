@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { TextInput as TextInputBase, TextInputProps } from 'react-native';
-import useKeyboardAwareContext from './useKeyboadAwareContext';
+import useKeyboardAwareContext from './useKeyboardAwareContext';
 
 /**
  * Use this TextInput instead of the default TextInput to make KeyboardAware*View

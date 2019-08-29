@@ -9,7 +9,7 @@ import ReactNative, {
   NativeScrollPoint
 } from 'react-native'
 import usePageY from './usePageY';
-import { useProvideKeyboardAwareContext } from './useKeyboadAwareContext';
+import { useProvideKeyboardAwareContext } from './useKeyboardAwareContext';
 
 const ScrollViewManager = NativeModules.ScrollViewManager
 
