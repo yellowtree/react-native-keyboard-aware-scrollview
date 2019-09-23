@@ -1,6 +1,14 @@
-import KeyboardAwareScrollView from './src/KeyboardAwareScrollView'
-import KeyboardAwareListView from './src/KeyboardAwareListView'
 import TextInput from './src/TextInput'
 import useKeyboardAwareContext from './src/useKeyboardAwareContext'
+import makeKeyboardAware from './src/makeKeyboardAware'
+import { ScrollView, FlatList } from 'react-native'
 
-export { KeyboardAwareScrollView, KeyboardAwareListView, TextInput, useKeyboardAwareContext }
+const KeyboardAwareScrollView = makeKeyboardAware(ScrollView)
+const KeyboardAwareFlatList = makeKeyboardAware(FlatList)
+
+export {
+  KeyboardAwareScrollView,
+  KeyboardAwareFlatList,
+  TextInput,
+  useKeyboardAwareContext
+}

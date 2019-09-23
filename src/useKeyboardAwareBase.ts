@@ -1,12 +1,15 @@
 import { useState, useCallback, useRef, useEffect, ReactElement, useMemo } from 'react'
 import ReactNative, {
-  DeviceEventEmitter,
   Keyboard,
   NativeModules,
   ScrollView,
   TextInput,
   LayoutRectangle,
-  NativeScrollPoint
+  NativeScrollPoint,
+  Platform,
+  KeyboardEventName,
+  StyleProp,
+  ViewStyle
 } from 'react-native'
 import usePageY from './usePageY';
 import { useProvideKeyboardAwareContext } from './useKeyboardAwareContext';
@@ -14,22 +17,23 @@ import { useProvideKeyboardAwareContext } from './useKeyboardAwareContext';
 const ScrollViewManager = NativeModules.ScrollViewManager
 
 export interface KeyboardAwareBaseProps {
+  style: StyleProp<ViewStyle>,
   scrollToInputAdditionalOffset?: number,
   scrollToBottomOnKBShow?: boolean,
   startScrolledToBottom?: boolean
 }
 
-type KeyboardAwareViewRef = React.MutableRefObject<ScrollView>
+type KeyboardAwareViewRef = React.MutableRefObject<ScrollView | undefined>
 
-const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
+const useKeyboardAwareBase: (props: KeyboardAwareBaseProps) => {
   keyboardHeight: number,
   keyboardAwareView: KeyboardAwareViewRef,
   onKeyboardAwareViewLayout: (layout: LayoutRectangle) => void,
   onKeyboardAwareViewScroll: (contentOffset: NativeScrollPoint) => void,
   updateKeyboardAwareViewContentSize: () => void,
-  dimensions: LayoutRectangle,
-  contentOffset: { x: number, y: number },
-  contentSize: LayoutRectangle,
+  dimensions: LayoutRectangle | undefined,
+  contentOffset: { x: number, y: number } | undefined,
+  contentSize: LayoutRectangle | undefined,
   wrapRender: (children: ReactElement) => ReactElement
 } = ({
   style = false,
@@ -38,7 +42,7 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
   startScrolledToBottom = false
 }) => {
     const [keyboardHeight, setKeyboardHeight] = useState(0)
-    const keyboardAwareView: KeyboardAwareViewRef = useRef()
+    const keyboardAwareView: KeyboardAwareViewRef = useRef<ScrollView>()
     const dimensions = useRef<LayoutRectangle>()
     const contentOffset = useRef<{ x: number, y: number }>()
     const contentSize = useRef<LayoutRectangle>()
@@ -46,11 +50,13 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
     const [getPageY, wrapPageY] = usePageY(style)
 
     const scrollToTextInput = useCallback((input: TextInput) => {
+      if (Platform.OS === 'android') { return }
       if (!input) {
         return;
       }
       setImmediate(() => {
         getPageY(pageY => {
+          if (!keyboardAwareView.current) { return }
           keyboardAwareView.current
             .getScrollResponder()
             // @ts-ignore This function is missing from react-native's types
@@ -65,13 +71,12 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
     const { textInputRefs, wrap: wrapContext } = useProvideKeyboardAwareContext(scrollToTextInput)
 
     const scrollToFocusedTextInput = useCallback(() => {
-      textInputRefs.some((textInputRef, index) => {
+      if (Platform.OS === 'android') { return }
+      textInputRefs.some((textInputRef) => {
         if (!textInputRef) {
-          // console.warn('getTextInputRefs returned falsy value at position ' + index)
           return false
         }
         if (!textInputRef.isFocused || (typeof textInputRef.isFocused !== "function")) {
-          // console.warn('getTextInputRefs returned something that isn\'t a TextInput at position ' + index)
           return false
         }
         if (textInputRef.isFocused()) {
@@ -79,7 +84,7 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
         }
         return textInputRef.isFocused();
       });
-    }, [scrollToTextInput])
+    }, [scrollToTextInput, textInputRefs])
 
     const scrollToBottom = useCallback((scrollAnimated = true) => {
       if (keyboardAwareView.current) {
@@ -95,7 +100,7 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
     }, [])
 
     const onKeyboardWillShow = useCallback((event) => {
-      scrollToFocusedTextInput();
+      setTimeout(() => scrollToFocusedTextInput(), 400);
 
       const newKeyboardHeight = event.endCoordinates.height;
       if (keyboardHeight === newKeyboardHeight) {
@@ -109,20 +114,19 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
       }
     }, [keyboardHeight, scrollToFocusedTextInput])
 
-    const onKeyboardWillHide = useCallback((event) => {
+    const onKeyboardWillHide = useCallback((_event) => {
       const _keyboardHeight = keyboardHeight
       setKeyboardHeight(0)
 
-      const hasYOffset = contentOffset.current && contentOffset.current.y;
-      const yOffset = hasYOffset ? Math.max(contentOffset.current.y - _keyboardHeight, 0) : 0;
+      const yOffset = (contentOffset.current && contentOffset.current.y) ? Math.max(contentOffset.current.y - _keyboardHeight, 0) : 0;
       keyboardAwareView.current && keyboardAwareView.current.scrollTo({ x: 0, y: yOffset, animated: true });
     }, [keyboardHeight])
 
     useEffect(() => {
-      const KeyboardEventsObj = Keyboard || DeviceEventEmitter;
+      if (Platform.OS === 'android') { return }
       const keyboardEventListeners = [
-        KeyboardEventsObj.addListener('keyboardWillShow', onKeyboardWillShow),
-        KeyboardEventsObj.addListener('keyboardWillHide', onKeyboardWillHide)
+        Keyboard.addListener(`keyboardWillShow` as KeyboardEventName, onKeyboardWillShow),
+        Keyboard.addListener(`keyboardWillHide` as KeyboardEventName, onKeyboardWillHide)
       ];
       return () => keyboardEventListeners.forEach((eventListener) => eventListener.remove())
     }, [onKeyboardWillShow, onKeyboardWillHide])
@@ -165,7 +169,7 @@ const useKeyboardAwareBase: (KeyboardAwareBaseProps) => {
     //   }
     // }, [])
 
-    const wrapRender = useMemo(() => x => wrapContext(wrapPageY(x)), [wrapContext, wrapPageY])
+    const wrapRender = useMemo(() => (x: ReactElement) => wrapContext(wrapPageY(x)), [wrapContext, wrapPageY])
 
     return {
       keyboardHeight,
