@@ -75,8 +75,8 @@ function makeKeyboardAware<
       }
 
       return {
-        contentContainerStyle,
-        nextWrapStyle
+        contentContainerStyle: nextContentContainerStyle,
+        wrapStyle: nextWrapStyle
       }
     }, [props.contentContainerStyle, outerHeight])
 
