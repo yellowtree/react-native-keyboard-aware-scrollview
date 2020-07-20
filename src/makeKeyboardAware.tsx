@@ -26,7 +26,7 @@ function makeKeyboardAware<
     T,
     PropsWithChildren<Props> &
       KeyboardAwareBaseProps & {
-        onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
+        onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
       }
   >((props, ref) => {
     const {
