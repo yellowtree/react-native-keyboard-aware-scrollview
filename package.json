@@ -18,7 +18,11 @@
   "author": "Artal Druk <artald@wix.com>",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": ">=0.59.0",
-    "react": ">=0.16.8"
+    "react": ">=0.16.8",
+    "react-native": ">=0.59.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.43",
+    "@types/react-native": "^0.63.1"
   }
 }

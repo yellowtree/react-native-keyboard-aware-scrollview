@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, PropsWithChildren } from 'react'
 
 import {
   NativeSyntheticEvent,
@@ -24,7 +24,7 @@ function makeKeyboardAware<
 >(ScrollViewComponent: T) {
   return React.forwardRef<
     T,
-    Props &
+    PropsWithChildren<Props> &
       KeyboardAwareBaseProps & {
         onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
       }
