@@ -7,19 +7,25 @@ import {
   ScrollViewProps,
   Platform,
   View,
-  StyleSheet,
-  ScrollView,
-  FlatList
+  StyleSheet
 } from 'react-native'
+
+// type PropsOfComponent<
+//   T extends React.ComponentType
+// > = T extends React.FunctionComponent
+//   ? Parameters<T>[0]
+//   : T extends React.ComponentClass
+//   ? InstanceType<T>['props']
+//   : never
 
 import useKeyboardAwareBase, {
   KeyboardAwareBaseProps
 } from './useKeyboardAwareBase'
 import useMergedRef from './useMergedRef'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function makeKeyboardAware<
-  Props extends Pick<
+  T extends Pick<
     ScrollViewProps,
     | 'scrollEventThrottle'
     | 'scrollEnabled'
@@ -28,12 +34,11 @@ function makeKeyboardAware<
     | 'automaticallyAdjustContentInsets'
     | 'onContentSizeChange'
     | 'contentContainerStyle'
-  >,
-  T extends React.ComponentType<Props>
->(ScrollViewComponent: T) {
+  >
+>(ScrollViewComponent: React.ComponentType<T>) {
   return React.forwardRef<
     T,
-    PropsWithChildren<Props> &
+    PropsWithChildren<T> &
       KeyboardAwareBaseProps & {
         onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
       }
