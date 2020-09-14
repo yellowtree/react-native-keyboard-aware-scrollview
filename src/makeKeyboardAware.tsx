@@ -19,8 +19,17 @@ import useMergedRef from './useMergedRef'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function makeKeyboardAware<
-  T extends ScrollView | FlatList,
-  Props extends ScrollViewProps
+  Props extends Pick<
+    ScrollViewProps,
+    | 'scrollEventThrottle'
+    | 'scrollEnabled'
+    | 'onLayout'
+    | 'onScroll'
+    | 'automaticallyAdjustContentInsets'
+    | 'onContentSizeChange'
+    | 'contentContainerStyle'
+  >,
+  T extends React.ComponentType<Props>
 >(ScrollViewComponent: T) {
   return React.forwardRef<
     T,
