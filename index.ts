@@ -7,6 +7,7 @@ const KeyboardAwareScrollView = makeKeyboardAware(ScrollView)
 const KeyboardAwareFlatList = makeKeyboardAware(FlatList)
 
 export {
+  makeKeyboardAware,
   KeyboardAwareScrollView,
   KeyboardAwareFlatList,
   TextInput,
