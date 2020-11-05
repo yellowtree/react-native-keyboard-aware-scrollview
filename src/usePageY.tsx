@@ -3,6 +3,8 @@ import { View, StyleProp, ViewStyle } from 'react-native'
 
 type PageYCallback = (pageY: number) => void
 
+const flex1 = { flex: 1 }
+
 const usePageY: (
   style: StyleProp<ViewStyle>
 ) => [(cb: PageYCallback) => void, (children: ReactElement) => ReactElement] = (
@@ -25,7 +27,9 @@ const usePageY: (
 
   const wrap = useCallback(
     (children) => (
-      <View ref={wrapper as React.MutableRefObject<View>} style={style}>
+      <View
+        ref={wrapper as React.MutableRefObject<View>}
+        style={[flex1, style]}>
         {children}
       </View>
     ),
