@@ -24,7 +24,7 @@ import { useProvideKeyboardAwareContext } from './useKeyboardAwareContext'
 const ScrollViewManager = NativeModules.ScrollViewManager
 
 export interface KeyboardAwareBaseProps {
-  style: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>
   scrollToInputAdditionalOffset?: number
   scrollToBottomOnKBShow?: boolean
   startScrolledToBottom?: boolean
