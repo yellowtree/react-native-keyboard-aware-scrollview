@@ -13,19 +13,22 @@ const noopContext = {
 }
 
 export const KeyboardAwareContext = React.createContext<{
-  registerInput: (TextInput) => () => void
-  onFocus: (TextInput) => void
+  registerInput: (input?: TextInput | null) => () => void
+  onFocus: (input?: TextInput | null) => void
 }>(noopContext)
 
 export const useProvideKeyboardAwareContext: (
-  onFocus: (TextInput) => void
+  onFocus: (input: TextInput) => void
 ) => {
   textInputRefs: TextInput[]
   wrap: (children: ReactElement) => ReactElement
 } = (onFocus) => {
   const textInputRefs = useRef<TextInput[]>([])
 
-  const registerInput = useCallback((input: TextInput) => {
+  const registerInput = useCallback((input?: TextInput | null) => {
+    if (!input) {
+      return () => undefined
+    }
     textInputRefs.current = textInputRefs.current
       .filter((x) => x !== input)
       .concat([input])
@@ -34,8 +37,18 @@ export const useProvideKeyboardAwareContext: (
     }
   }, [])
 
+  const handleFocus = useCallback(
+    (input?: TextInput | null) => {
+      if (input) {
+        onFocus(input)
+      }
+    },
+    [onFocus]
+  )
+
   const wrap = (children: ReactElement): React.ReactElement => (
-    <KeyboardAwareContext.Provider value={{ registerInput, onFocus }}>
+    <KeyboardAwareContext.Provider
+      value={{ registerInput, onFocus: handleFocus }}>
       {children}
     </KeyboardAwareContext.Provider>
   )
@@ -52,10 +65,10 @@ export const useProvideKeyboardAwareContext: (
  * Usage: pass inputRef as ref and onFocus to the <TextInput> in question.
  */
 const useKeyboardAwareContext: () => {
-  inputRef: React.MutableRefObject<TextInput>
+  inputRef: React.Ref<TextInput>
   onFocus: () => void
 } = () => {
-  const inputRef = useRef<TextInput>()
+  const inputRef = useRef<TextInput>(null)
   const { onFocus, registerInput } = useContext(KeyboardAwareContext)
 
   useEffect(() => registerInput(inputRef.current), [registerInput])

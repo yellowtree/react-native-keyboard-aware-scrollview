@@ -118,8 +118,8 @@ const useKeyboardAwareBase: (
 
       const bottomYOffset =
         contentSize.current.height -
-        dimensions.current.height +
-        keyboardAwareView.current.props.contentInset.bottom
+        (dimensions.current?.height || 0) +
+        (keyboardAwareView.current.props.contentInset?.bottom || 0)
       keyboardAwareView.current &&
         keyboardAwareView.current.scrollTo({
           x: 0,
@@ -205,7 +205,7 @@ const useKeyboardAwareBase: (
     ) {
       ScrollViewManager.getContentSize(
         ReactNative.findNodeHandle(keyboardAwareView.current),
-        (res) => {
+        (res: ReactNative.LayoutRectangle) => {
           contentSize.current = res
         }
       )
