@@ -1,28 +1,35 @@
 # react-native-keyboard-aware-scrollview
+
 A helper component meant to be used as a drop-in replacement for RN ScrollView which handles the ScrollView insets properly when the keyboard is shown or hides so all the content is scrollable and available to the user.
 
 ## This is a fork, but not a drop-in-replacement
+
 The fork converts the library to Typescript and removes all classes in favour of hooks.
 
 ## Installation
 
 Install using `npm`:
+
 ```
-yarn add ssh://git@github.com:yellowtree/react-native-keyboard-aware-scrollview.git
+yarn add @yellowtree/react-native-keyboard-aware-scrollview
 ```
 
 ## How To Use
+
 Simply import the new component:
 
 ```ts
-import {KeyboardAwareScrollView, TextInput} from 'react-native-keyboard-aware-scrollview'
+import {
+  KeyboardAwareScrollView,
+  TextInput
+} from '@yellowtree/react-native-keyboard-aware-scrollview'
 ```
 
 Now use it as you would normally do with a `ScrollView` to wrap arround `TextInput` components:
 
 ```tsx
 <KeyboardAwareScrollView>
-    <TextInput />
+  <TextInput />
 </KeyboardAwareScrollView>
 ```
 
