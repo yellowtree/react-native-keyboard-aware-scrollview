@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { TextInput as TextInputBase, TextInputProps } from 'react-native'
+import { NativeSyntheticEvent, TextInput as TextInputBase, TextInputFocusEventData, TextInputProps } from 'react-native'
 import useKeyboardAwareContext from './useKeyboardAwareContext'
 import useMergedRef from './useMergedRef'
 
@@ -16,7 +16,7 @@ const TextInput = React.forwardRef<TextInputBase, TextInputProps>(
 
     const propsOnFocus = props.onFocus
     const handleFocus = useCallback(
-      (e) => {
+      (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
         propsOnFocus && propsOnFocus(e)
         onFocus()
       },

@@ -129,7 +129,7 @@ const useKeyboardAwareBase: (
     }
   }, [])
 
-  const onKeyboardWillShow = useCallback(
+  const onKeyboardWillShow = useCallback<ReactNative.KeyboardEventListener>(
     (event) => {
       setTimeout(() => scrollToFocusedTextInput(), 400)
 
@@ -152,7 +152,7 @@ const useKeyboardAwareBase: (
     ]
   )
 
-  const onKeyboardWillHide = useCallback(
+  const onKeyboardWillHide = useCallback<ReactNative.KeyboardEventListener>(
     (_event) => {
       const _keyboardHeight = keyboardHeight
       setKeyboardHeight(0)
@@ -172,14 +172,8 @@ const useKeyboardAwareBase: (
       return
     }
     const keyboardEventListeners = [
-      Keyboard.addListener(
-        'keyboardWillShow' as KeyboardEventName,
-        onKeyboardWillShow
-      ),
-      Keyboard.addListener(
-        'keyboardWillHide' as KeyboardEventName,
-        onKeyboardWillHide
-      )
+      Keyboard.addListener('keyboardWillShow', onKeyboardWillShow),
+      Keyboard.addListener('keyboardWillHide', onKeyboardWillHide)
     ]
     return (): void =>
       keyboardEventListeners.forEach((eventListener) => eventListener.remove())
@@ -213,7 +207,7 @@ const useKeyboardAwareBase: (
   }, [])
 
   const onKeyboardAwareViewLayout = useCallback(
-    (layout) => {
+    (layout: LayoutRectangle) => {
       dimensions.current = layout
       contentOffset.current = { x: 0, y: 0 }
       updateKeyboardAwareViewContentSize()
@@ -222,7 +216,7 @@ const useKeyboardAwareBase: (
   )
 
   const onKeyboardAwareViewScroll = useCallback(
-    (nextContentOffset) => {
+    (nextContentOffset: NativeScrollPoint) => {
       contentOffset.current = nextContentOffset
       updateKeyboardAwareViewContentSize()
     },
