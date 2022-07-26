@@ -14,7 +14,6 @@ import ReactNative, {
   LayoutRectangle,
   NativeScrollPoint,
   Platform,
-  KeyboardEventName,
   StyleProp,
   ViewStyle
 } from 'react-native'
