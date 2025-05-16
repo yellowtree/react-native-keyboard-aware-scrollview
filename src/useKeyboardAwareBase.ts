@@ -50,10 +50,10 @@ const useKeyboardAwareBase: (
   startScrolledToBottom = false
 }) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
-  const keyboardAwareView: KeyboardAwareViewRef = useRef<ScrollView>()
-  const dimensions = useRef<LayoutRectangle>()
-  const contentOffset = useRef<{ x: number; y: number }>()
-  const contentSize = useRef<LayoutRectangle>()
+  const keyboardAwareView: KeyboardAwareViewRef = useRef<ScrollView>(undefined)
+  const dimensions = useRef<LayoutRectangle>(undefined)
+  const contentOffset = useRef<{ x: number; y: number }>(undefined)
+  const contentSize = useRef<LayoutRectangle>(undefined)
 
   const [getPageY, wrapPageY] = usePageY(style)
 

@@ -10,7 +10,7 @@ const usePageY: (
 ) => [(cb: PageYCallback) => void, (children: ReactElement) => ReactElement] = (
   style
 ) => {
-  const wrapper = useRef<View>()
+  const wrapper = useRef<View>(undefined)
 
   const getPageY = useCallback((pageYCallback: PageYCallback) => {
     if (wrapper.current) {
