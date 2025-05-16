@@ -1,25 +1,22 @@
-import React, { useCallback, useState, useMemo, PropsWithChildren } from 'react'
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  type PropsWithChildren
+} from 'react'
 
 import {
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  LayoutChangeEvent,
-  ScrollViewProps,
+  type NativeSyntheticEvent,
+  type NativeScrollEvent,
+  type LayoutChangeEvent,
+  type ScrollViewProps,
   Platform,
   View,
   StyleSheet
 } from 'react-native'
 
-// type PropsOfComponent<
-//   T extends React.ComponentType
-// > = T extends React.FunctionComponent
-//   ? Parameters<T>[0]
-//   : T extends React.ComponentClass
-//   ? InstanceType<T>['props']
-//   : never
-
 import useKeyboardAwareBase, {
-  KeyboardAwareBaseProps
+  type KeyboardAwareBaseProps
 } from './useKeyboardAwareBase'
 import useMergedRef from './useMergedRef'
 
@@ -106,7 +103,8 @@ function makeKeyboardAware<
         onScroll={onScroll}
         automaticallyAdjustContentInsets={false}
         onContentSizeChange={updateKeyboardAwareViewContentSize}
-        contentContainerStyle={contentContainerStyle}>
+        contentContainerStyle={contentContainerStyle}
+      >
         <View style={wrapStyle}>{props.children}</View>
       </ScrollViewComponent>
     )
