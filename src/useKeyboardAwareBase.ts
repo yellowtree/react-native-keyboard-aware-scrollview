@@ -8,7 +8,6 @@ import {
 } from 'react'
 import ReactNative, {
   Keyboard,
-  NativeModules,
   type ScrollView,
   type TextInput,
   type LayoutRectangle,
